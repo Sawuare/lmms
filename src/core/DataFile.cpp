@@ -87,7 +87,6 @@ DataFile::typeDescStruct
 {
 	{ DataFile::UnknownType, "unknown" },
 	{ DataFile::SongProject, "song" },
-	{ DataFile::SongProjectTemplate, "songtemplate" },
 	{ DataFile::InstrumentTrackSettings, "instrumenttracksettings" },
 	{ DataFile::DragNDropData, "dnddata" },
 	{ DataFile::ClipboardData, "clipboard-data" },
@@ -186,12 +185,6 @@ bool DataFile::validate( QString extension )
 			return true;
 		}
 		break;
-	case Type::SongProjectTemplate:
-		if(  extension == "mpt" )
-		{
-			return true;
-		}
-		break;
 	case Type::InstrumentTrackSettings:
 		if ( extension == "xpf" || extension == "xml" )
 		{
@@ -249,12 +242,6 @@ QString DataFile::nameWithExtension( const QString & _fn ) const
 				return _fn + ".mmp";
 			}
 			break;
-		case SongProjectTemplate:
-			if( _fn.section( '.',-1 ) != "mpt" )
-			{
-				return _fn + ".mpt";
-			}
-			break;
 		case InstrumentTrackSettings:
 			if( _fn.section( '.', -1 ) != "xpf" )
 			{
@@ -271,8 +258,7 @@ QString DataFile::nameWithExtension( const QString & _fn ) const
 
 void DataFile::write( QTextStream & _strm )
 {
-	if( type() == SongProject || type() == SongProjectTemplate
-					|| type() == InstrumentTrackSettings )
+	if( type() == SongProject || type() == InstrumentTrackSettings )
 	{
 		cleanMetaNodes( documentElement() );
 	}
@@ -1753,7 +1739,7 @@ void DataFile::upgrade()
 	documentElement().setAttribute( "creator", "LMMS" );
 	documentElement().setAttribute( "creatorversion", LMMS_VERSION );
 
-	if( type() == SongProject || type() == SongProjectTemplate )
+	if( type() == SongProject )
 	{
 		// Time-signature
 		if ( !m_head.hasAttribute( "timesig_numerator" ) )
